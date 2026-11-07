@@ -1,0 +1,21 @@
+name: Déploiement
+
+# Pousser sur main (ou lancer manuellement) déploie Mon-GES sur la VM
+# via un runner auto-hébergé (étiquette « monges ») sur 192.168.1.8.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-monges
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, monges]
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+      - name: Déployer
+        run: bash deploy/deploy.sh "$GITHUB_WORKSPACE"
